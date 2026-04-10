@@ -14,8 +14,24 @@ const PORT = process.env.PORT || 3000;
 app.use(helmet());
 
 // CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://gatostadalabs.es', // Main domain
+];
+if (process.env.CORS_ORIGIN) {
+  allowedOrigins.push(process.env.CORS_ORIGIN);
+}
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(ao => origin.startsWith(ao))) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS por Antigravity Security'));
+    }
+  },
   credentials: true
 }));
 
