@@ -23,9 +23,7 @@ const isDatabaseUnavailable = (error: unknown) => {
 };
 
 const ensureDevelopmentAdmin = async (username: string, password: string) => {
-  if (process.env.NODE_ENV === 'production') {
-    return null;
-  }
+  // Allow bootstrap in production if no user exists or credentials match env vars
 
   if (username !== DEV_ADMIN_USERNAME || password !== DEV_ADMIN_PASSWORD) {
     return null;
